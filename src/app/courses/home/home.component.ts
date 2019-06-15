@@ -1,10 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {Course} from "../model/course";
-import {Observable} from "rxjs";
-import {filter, map, tap, withLatestFrom} from "rxjs/operators";
-import {CoursesService} from "../services/courses.service";
+import {Course} from '../model/course';
+import {Observable} from 'rxjs';
+import {filter, map, tap, withLatestFrom} from 'rxjs/operators';
+import {CoursesService} from '../services/courses.service';
 import {AppState} from '../../reducers';
 import {select, Store} from '@ngrx/store';
+import { AllCoursesRequested } from '../course.actions';
+import {selectAdvancedCourses, selectAllCourses, selectBeginnerCourses, selectPromoTotal} from '../courses.selectors';
 @Component({
     selector: 'home',
     templateUrl: './home.component.html',
@@ -24,20 +26,27 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
 
-        const courses$ = this.coursesService.findAllCourses();
+        // const courses$ = this.coursesService.findAllCourses();
 
-        this.beginnerCourses$ = courses$.pipe(
-          map(courses => courses.filter(course => course.category === 'BEGINNER') )
-        );
+        // this.beginnerCourses$ = courses$.pipe(
+        //   map(courses => courses.filter(course => course.category === 'BEGINNER') )
+        // );
 
-        this.advancedCourses$ = courses$.pipe(
-            map(courses => courses.filter(course => course.category === 'ADVANCED') )
-        );
+        // this.advancedCourses$ = courses$.pipe(
+        //     map(courses => courses.filter(course => course.category === 'ADVANCED') )
+        // );
 
-        this.promoTotal$ = courses$.pipe(
-            map(courses => courses.filter(course => course.promo).length)
-        );
+        // this.promoTotal$ = courses$.pipe(
+        //     map(courses => courses.filter(course => course.promo).length)
+        // );
 
+        this.store.dispatch(new AllCoursesRequested());
+
+        this.beginnerCourses$ = this.store.pipe(select(selectBeginnerCourses));
+
+        this.advancedCourses$ = this.store.pipe(select(selectAdvancedCourses));
+
+        this.promoTotal$ = this.store.pipe(select(selectPromoTotal));
     }
 
 }
