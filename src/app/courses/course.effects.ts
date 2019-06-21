@@ -13,7 +13,7 @@ import {catchError, concatMap, exhaustMap, filter, map, mergeMap, withLatestFrom
 import {CoursesService} from './services/courses.service';
 import {AppState} from '../reducers';
 import {select, Store} from '@ngrx/store';
-//import {allCoursesLoaded} from './course.selectors';
+ import {allCoursesLoaded} from './courses.selectors';
 
 @Injectable()
 export class CourseEffects {
@@ -27,15 +27,16 @@ export class CourseEffects {
 
   );
 
-//   @Effect()
-//   loadAllCourses$ = this.actions$
-//     .pipe(
-//       ofType<AllCoursesRequested>(CourseActionTypes.AllCoursesRequested),
-//       withLatestFrom(this.store.pipe(select(allCoursesLoaded))),
-//       filter(([action, allCoursesLoaded]) => !allCoursesLoaded),
-//       mergeMap(() => this.coursesService.findAllCourses()),
-//       map(courses => new AllCoursesLoaded({courses}))
-//     );
+  @Effect()
+  loadAllCourses$ = this.actions$
+    .pipe(
+      ofType<AllCoursesRequested>(CourseActionTypes.AllCoursesRequested),
+       withLatestFrom(this.store.pipe(select(allCoursesLoaded))),
+      // tslint:disable-next-line:no-shadowed-variable
+      filter(([action, allCoursesLoaded]) => !allCoursesLoaded),
+      mergeMap(() => this.coursesService.findAllCourses()),
+      map(courses => new AllCoursesLoaded({courses}))
+    );
 
 
 //   @Effect()
